@@ -29,8 +29,14 @@ SCC <- readRDS(fpathSCC)
 # Plot 1
 table_year_Emissions <- aggregate(Emissions ~ year, NEI, sum)
 
-png(file="plot1.png")
+png(file="plot1_linechart.png")
 plot(table_year_Emissions$year, table_year_Emissions$Emissions, type="b", xlab="Year",
+     ylab=expression("Total PM"[2.5]*" Emissions"), 
+     main=expression("Total PM"[2.5]*" Emissions in US [1999-2008]"))
+dev.off()
+
+png(file="plot1_barplot.png")
+barplot(table_year_Emissions$Emissions, names.arg=table_year_Emissions$year, xlab="Year",
      ylab=expression("Total PM"[2.5]*" Emissions"), 
      main=expression("Total PM"[2.5]*" Emissions in US [1999-2008]"))
 dev.off()

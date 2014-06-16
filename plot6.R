@@ -26,12 +26,14 @@ fpathSCC = file.path(td, fnameSCC)
 NEI <- readRDS(fpathNEI)
 SCC <- readRDS(fpathSCC)
 
-# Plots 4, 5, 6
+# Link for definition of emission sources: http://www.epa.gov/air/emissions/basic.htm
+# http://www.epa.gov/otaq/standards/basicinfo.htm
+# common code for plots 4, 5, 6
 NEI <- NEI[, c("fips", "SCC", "Emissions", "year")]
-SCC <- SCC[, c("SCC", "EI.Sector")]
+SCC <- SCC[, c("SCC", "Data.Category", "EI.Sector")]
 NEI2 <- merge(NEI, SCC, by="SCC")
 
-# Plots 5, 6
+# Common for plots 5, 6
 NEI2$vehicle <- grepl("[Vv]ehicle",NEI2$EI.Sector)
 NEI2_vehicles_baltimore <- NEI2[NEI2$vehicle == TRUE & NEI$fips == "24510", ]
 table_baltimore_year_Emissions <- aggregate(Emissions ~ year, NEI2_vehicles_baltimore, sum)
@@ -40,7 +42,7 @@ table_baltimore_year_Emissions <- aggregate(Emissions ~ year, NEI2_vehicles_balt
 NEI2_vehicles_los_angeles <- NEI2[NEI2$vehicle == TRUE & NEI$fips == "06037", ]
 table_los_angeles_year_Emissions <- aggregate(Emissions ~ year, NEI2_vehicles_los_angeles, sum)
 
-png(file="plot6.png")
+png(file="plot6_linechart.png")
 plot(table_baltimore_year_Emissions$year, table_baltimore_year_Emissions$Emissions,
      type="b", xlab="Year", ylab=expression("Vehicular PM" [2.5]*" Emissions"), ylim = c(0,120), 
      main=expression("Vehicular PM" [2.5]*" Emissions in Baltimore City vs. Los Angeles"))
@@ -49,3 +51,10 @@ lines(table_los_angeles_year_Emissions$year, table_los_angeles_year_Emissions$Em
 legend("topright",c("Baltimore City", "Los Angeles"), lty=c(1,1), col=c(1,2))
 dev.off()
 
+emissions <- rbind(table_baltimore_year_Emissions$Emissions, table_los_angeles_year_Emissions$Emissions)
+png(file="plot6_barplot.png")
+barplot(emissions, names.arg=table_year_Emissions$year, beside=TRUE, 
+     xlab="Year", ylab=expression("Vehicular PM" [2.5]*" Emissions"), 
+     main=expression("Vehicular PM" [2.5]*" Emissions in Baltimore City vs. Los Angeles"),
+     col=c(1,2), legend=c("Baltimore City", "Los Angeles"), args.legend=list(x="topright"))
+dev.off()

@@ -30,8 +30,14 @@ SCC <- readRDS(fpathSCC)
 baltimore_NEI <- NEI[NEI$fips == "24510", ]
 table_baltimore_year_Emissions <- aggregate(Emissions ~ year, baltimore_NEI, sum)
 
-png(file="plot2.png")
+png(file="plot2_linechart.png")
 plot(table_baltimore_year_Emissions$year, table_baltimore_year_Emissions$Emissions,
-     type="b", xlab="Year", ylab=expression("Total PM" [2.5]*" Emissions"),
+     type="b", xlab="Year", ylab=expression("Total PM" [2.5]*" Emissions"), ylim=c(0,3300),
+     main=expression("Total PM" [2.5]*" Emissions in Baltimore City [1999-2008]"))
+dev.off()
+
+png(file="plot2_barplot.png")
+barplot(table_baltimore_year_Emissions$Emissions, names.arg=table_baltimore_year_Emissions$year,
+     ylab=expression("Total PM" [2.5]*" Emissions"),
      main=expression("Total PM" [2.5]*" Emissions in Baltimore City [1999-2008]"))
 dev.off()

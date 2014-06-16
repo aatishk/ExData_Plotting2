@@ -32,10 +32,20 @@ NEI$type <- as.factor(NEI$type)
 table2_baltimore_year_type_Emissions <- aggregate(Emissions ~ year+type, baltimore_NEI, sum)
 library(ggplot2)
 
-png(file="plot3.png")
+png(file="plot3_linechart.png")
 number_ticks <- function(n) {function(limits) pretty(limits, n)}
-qplot(year, Emissions, data=table2_baltimore_year_type_Emissions, 
+qplot(year, Emissions, data=table2_baltimore_year_type_Emissions, geom=c("line", "point"),
       facets = .~ type, xlab="Year", ylab=expression("Total PM" [2.5]*" Emissions"),
       main=expression("Total PM" [2.5]*" Emissions in Baltimore City as per source type")) +
-  scale_x_continuous(breaks=number_ticks(3)) + geom_line() + geom_point()
+scale_x_continuous(breaks=number_ticks(3))
+dev.off()
+
+png(file="plot3_barplot.png")
+number_ticks <- function(n) {function(limits) pretty(limits, n)}
+qplot(year, Emissions, data=table2_baltimore_year_type_Emissions, geom="bar", stat="identity",
+      facets = .~ type, xlab="Year", ylab=expression("Total PM" [2.5]*" Emissions"),
+      main=expression("Total PM" [2.5]*" Emissions in Baltimore City as per source type"))+
+  theme(axis.text.x=element_text(angle=90, hjust=1)) + 
+          scale_x_discrete(breaks=c("1999", "2002", "2005", "2010"))
+  scale_x_continuous(breaks=number_ticks(3))
 dev.off()

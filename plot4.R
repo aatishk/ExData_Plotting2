@@ -26,18 +26,26 @@ fpathSCC = file.path(td, fnameSCC)
 NEI <- readRDS(fpathNEI)
 SCC <- readRDS(fpathSCC)
 
-# Plots 4, 5, 6
+# Link for definition of emission sources: http://www.epa.gov/air/emissions/basic.htm
+# http://www.epa.gov/otaq/standards/basicinfo.htm
+# common code for plots 4, 5, 6
 NEI <- NEI[, c("fips", "SCC", "Emissions", "year")]
-SCC <- SCC[, c("SCC", "EI.Sector")]
+SCC <- SCC[, c("SCC", "Data.Category", "EI.Sector")]
 NEI2 <- merge(NEI, SCC, by="SCC")
 
 # Plot 4
 NEI2$coal <- grepl("[Cc]oal",NEI2$EI.Sector)
 NEI2_coal <- NEI2[NEI2$coal == TRUE, ]
-
-png(file="plot4.png")
 table_year_Emissions <- aggregate(Emissions ~ year, NEI2_coal, sum)
+
+png(file="plot4_linechart.png")
 plot(table_year_Emissions$year, table_year_Emissions$Emissions, type="b", xlab="Year",
      ylab=expression("Coal Combustion PM"[2.5]*" Emissions"), 
+     main=expression("Coal Combustion PM"[2.5]*" Emissions in US [1999-2008]"))
+dev.off()
+
+png(file="plot4_barplot.png")
+barplot(table_year_Emissions$Emissions, names.arg=table_year_Emissions$year, xlab="Year",
+     ylab=expression("Coal Combustion PM"[2.5]*" Emissions"),
      main=expression("Coal Combustion PM"[2.5]*" Emissions in US [1999-2008]"))
 dev.off()
